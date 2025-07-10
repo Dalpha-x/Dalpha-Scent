@@ -1,0 +1,52 @@
+.hero {
+    background: url('bg_images/dalpha5.jpg') no-repeat center center/cover;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2rem;
+    max-width: 500px;
+    margin-left: 5%;
+    border-radius: 8px;
+}
+
+.hero-content h1 {
+    font-family: 'Segoe UI', sans-serif;
+    color: #000;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 25px;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        background-position: top center;
+    }
+
+    .hero-content {
+        margin: auto;
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+}

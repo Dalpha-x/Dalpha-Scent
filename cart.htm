@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Cart | Dalpha Scents</title>
+  <link rel="icon" type="image/png" href="logos/Dalpha1.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="myhero.css" />
+  <link rel="stylesheet" type="text/css" href="myproducts.css" />
+  <style>
+    body {
+      background-color: #f8f8ff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #030303;
+    }
+
+    header {
+      background-color: #3d5d27;
+      color: #f8f8ff;
+      padding: 1em;
+      text-align: center;
+    }
+
+    section {
+      max-width: 900px;
+      margin: 2em auto;
+      padding: 1em;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #fff;
+    }
+
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-details h4 {
+      margin: 0;
+    }
+
+    .remove-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .remove-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .total-section {
+      text-align: right;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .checkout-btn {
+      background-color: #3d5d27;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 1em;
+    }
+
+    .checkout-btn:hover {
+      background-color: #2d451d;
+    }
+
+    footer {
+      background-color: #3d5d27;
+      color: #f8f8ff;
+      text-align: center;
+      padding: 1.5em;
+      margin-top: 4em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your Shopping Cart</h1>
+  </header>
+
+  <section id="cart">
+    <h2>Your Checkout</h2>
+    <div id="cart-items"></div>
+    <p class="total-section">Total: ₦<span id="cart-total">0</span></p>
+    <label for="customer-name">Your Name:</label>
+    <input type="text" id="customer-name" placeholder="Enter your name" required />
+    <label for="customer-address">Delivery Address:</label>
+    <textarea id="customer-address" placeholder="Enter your full delivery address" required style="width: 100%; padding: 0.5em;"></textarea>
+
+    <button class="checkout-btn" onclick="sendToWhatsApp()">Checkout via WhatsApp</button>
+  </section>
+
+  <footer>
+    © 2025 Dalpha Scent | Follow us @dalphascents | Email: Dalphascenthouse@outlook.com
+  </footer>
+
+  <script>
+    let cart = [];
+
+    function updateCartUI() {
+      const cartContainer = document.getElementById('cart-items');
+      const totalContainer = document.getElementById('cart-total');
+      cartContainer.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.image || 'products/default.jpg'}" alt="${item.name}" onerror="this.src='products/default.jpg'" />
+          <div class="cart-item-details">
+            <h4>${item.name}</h4>
+            <p>Quantity: ${item.quantity}</p>
+            <p>Subtotal: ₦${(item.price * item.quantity).toLocaleString()}</p>
+            <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+          </div>
+        `;
+        cartContainer.appendChild(div);
+        total += item.price * item.quantity;
+      });
+
+      totalContainer.textContent = total.toLocaleString();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('dalphacart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    window.onload = function () {
+      const saved = localStorage.getItem('dalphacart');
+      if (!saved) return;
+      cart = JSON.parse(saved);
+      updateCartUI();
+    };
+    function sendToWhatsApp() {
+  const name = document.getElementById("customer-name").value.trim();
+  const address = document.getElementById("customer-address").value.trim();
+
+  if (!name || !address) {
+    alert("Please fill in your name and address before checking out.");
+    return;
+  }
+
+  const saved = localStorage.getItem('dalphacart');
+  if (!saved) return alert("Your cart is empty!");
+
+  const cart = JSON.parse(saved);
+  if (!cart.length) return alert("Your cart is empty!");
+
+  let message = `🧾 *Dalpha Scents Order Receipt*\n👤 Name: *${name}*\n🏠 Address: *${address}*\n-------------------------\n`;
+  let total = 0;
+
+  cart.forEach((item, i) => {
+    let subtotal = item.price * item.quantity;
+    message += `*${i + 1}. ${item.name}*\nQty: ${item.quantity} | Subtotal: ₦${subtotal.toLocaleString()}\n\n`;
+    total += subtotal;
+  });
+
+  message += `-------------------------\n*Total: ₦${total.toLocaleString()}*\n`;
+  message += `\n🛍️ Thank you for shopping with Dalpha Scents!`;
+
+  const phone = "2349129449530";
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+
+  localStorage.removeItem('dalphacart');
+ }
+
+  </script>
+
+</body>
+</html>
